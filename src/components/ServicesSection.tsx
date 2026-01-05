@@ -8,7 +8,8 @@ import {
   Cpu, 
   Zap,
   ShieldCheck,
-  Cable
+  Cable,
+  Factory
 } from "lucide-react";
 
 const services = [
@@ -21,6 +22,11 @@ const services = [
     icon: Building2,
     title: "Commercial",
     description: "Industrial-grade electrical systems for offices, warehouses, and retail spaces.",
+  },
+  {
+    icon: Factory,
+    title: "Industrial",
+    description: "Heavy-duty electrical installations and maintenance for industrial facilities.",
   },
   {
     icon: Lightbulb,
