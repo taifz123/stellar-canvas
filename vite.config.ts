@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/stellar-canvas/", // GitHub Pages repository name
+  base: "./", // relative base for GitHub Pages/custom paths
   server: {
     host: "::",
     port: 8080,
