@@ -1,15 +1,10 @@
 import React from "react";
 import PulsarGridBackground from "@/components/ui/pulsar-grid-background";
 import Navbar from "@/components/Navbar";
-import HeroSection from "@/components/HeroSection";
-import ServicesSection from "@/components/ServicesSection";
-import ProjectsSection from "@/components/ProjectsSection";
-import AboutSection from "@/components/AboutSection";
-import ReviewSection from "@/components/ReviewSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 
-const Index: React.FC = () => {
+const Contact: React.FC = () => {
   return (
     <PulsarGridBackground
       backgroundColor="#020010"
@@ -17,12 +12,7 @@ const Index: React.FC = () => {
       gridSpacing={30}
     >
       <Navbar />
-      <main>
-        <HeroSection />
-        <ServicesSection />
-        <ProjectsSection />
-        <AboutSection />
-        <ReviewSection />
+      <main className="pt-20">
         <ContactSection />
       </main>
       <Footer />
@@ -30,4 +20,4 @@ const Index: React.FC = () => {
   );
 };
 
-export default Index;
+export default Contact;

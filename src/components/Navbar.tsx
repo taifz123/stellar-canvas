@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Phone, Mail, Zap } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import logo from "@/assets/logo-transparent.png";
 
 const navLinks = [
-  { name: "Home", href: "#home" },
-  { name: "Services", href: "#services" },
-  { name: "Projects", href: "#projects" },
-  { name: "About", href: "#about" },
-  { name: "Contact", href: "#contact" },
+  { name: "Home", path: "/" },
+  { name: "Services", path: "/services" },
+  { name: "Projects", path: "/projects" },
+  { name: "About", path: "/about" },
 ];
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,13 +36,17 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <motion.a
-            href="#home"
+          <Link
+            to="/"
             className="flex items-center gap-3"
-            whileHover={{ scale: 1.05 }}
           >
-            <img src={logo} alt="Exotic Electrical" className="h-14 w-14 object-contain" />
-            <div className="hidden sm:block">
+            <motion.img 
+              src={logo} 
+              alt="Exotic Electrical" 
+              className="h-14 w-14 object-contain"
+              whileHover={{ scale: 1.05 }}
+            />
+            <div className="block">
               <span className="font-display text-lg font-bold text-foreground tracking-wider">
                 EXOTIC
               </span>
@@ -49,19 +54,29 @@ const Navbar: React.FC = () => {
                 ELECTRICAL
               </span>
             </div>
-          </motion.a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
-                className="nav-link text-sm font-medium uppercase tracking-wider"
+                to={link.path}
+                className={`nav-link text-sm font-medium uppercase tracking-wider ${
+                  location.pathname === link.path ? "text-primary" : "text-foreground"
+                }`}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
+            <Link
+              to="/contact"
+              className={`nav-link text-sm font-medium uppercase tracking-wider ${
+                location.pathname === "/contact" ? "text-primary" : "text-foreground"
+              }`}
+            >
+              Contact
+            </Link>
           </div>
 
           {/* CTA Button */}
@@ -73,15 +88,13 @@ const Navbar: React.FC = () => {
               <Phone className="w-4 h-4" />
               <span className="text-sm">0415 054 695</span>
             </a>
-            <motion.a
-              href="#contact"
-              className="btn-primary-glow text-sm"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <Link
+              to="/contact"
+              className="btn-primary-glow text-sm flex items-center"
             >
               <Zap className="w-4 h-4 inline mr-2" />
               Get Quote
-            </motion.a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -106,18 +119,39 @@ const Navbar: React.FC = () => {
             <div className="container mx-auto px-4 py-6">
               <div className="flex flex-col gap-4">
                 {navLinks.map((link, index) => (
-                  <motion.a
+                  <Link
                     key={link.name}
-                    href={link.href}
+                    to={link.path}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className={`text-lg font-medium hover:text-primary transition-colors py-2 border-b border-primary/10 ${
+                        location.pathname === link.path ? "text-primary" : "text-foreground"
+                      }`}
+                    >
+                      {link.name}
+                    </motion.div>
+                  </Link>
+                ))}
+                <Link
+                  to="/contact"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    onClick={() => setIsOpen(false)}
-                    className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-primary/10"
+                    transition={{ delay: 0.4 }}
+                    className={`text-lg font-medium hover:text-primary transition-colors py-2 border-b border-primary/10 ${
+                      location.pathname === "/contact" ? "text-primary" : "text-foreground"
+                    }`}
                   >
-                    {link.name}
-                  </motion.a>
-                ))}
+                    Contact
+                  </motion.div>
+                </Link>
+                
                 <div className="flex flex-col gap-3 pt-4">
                   <a
                     href="tel:0415054695"
@@ -133,14 +167,14 @@ const Navbar: React.FC = () => {
                     <Mail className="w-5 h-5" />
                     <span>Email Us</span>
                   </a>
-                  <a
-                    href="#contact"
+                  <Link
+                    to="/contact"
                     onClick={() => setIsOpen(false)}
                     className="btn-primary-glow text-center mt-2"
                   >
                     <Zap className="w-4 h-4 inline mr-2" />
                     Get Quote
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
