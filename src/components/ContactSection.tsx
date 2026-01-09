@@ -33,11 +33,6 @@ const contactInfo = [
 ];
 
 const ContactSection: React.FC = () => {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-  };
-
   return (
     <section id="contact" className="py-24 md:py-32 bg-card/30">
       <div className="container mx-auto px-4 lg:px-8">
@@ -124,7 +119,13 @@ const ContactSection: React.FC = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <form onSubmit={handleSubmit} className="card-glass rounded-2xl p-8">
+            <form 
+              name="contact" 
+              method="POST" 
+              data-netlify="true" 
+              className="card-glass rounded-2xl p-8"
+            >
+              <input type="hidden" name="form-name" value="contact" />
               <h3 className="font-display text-2xl font-semibold text-foreground mb-6">
                 Request a Quote
               </h3>
@@ -137,7 +138,9 @@ const ContactSection: React.FC = () => {
                     </label>
                     <Input
                       type="text"
+                      name="name"
                       placeholder="John Doe"
+                      required
                       className="bg-background/50 border-primary/20 focus:border-primary text-foreground"
                     />
                   </div>
@@ -147,7 +150,9 @@ const ContactSection: React.FC = () => {
                     </label>
                     <Input
                       type="tel"
+                      name="phone"
                       placeholder="+61 xxx xxx xxx"
+                      required
                       className="bg-background/50 border-primary/20 focus:border-primary text-foreground"
                     />
                   </div>
@@ -159,7 +164,9 @@ const ContactSection: React.FC = () => {
                   </label>
                   <Input
                     type="email"
+                    name="email"
                     placeholder="john@example.com"
+                    required
                     className="bg-background/50 border-primary/20 focus:border-primary text-foreground"
                   />
                 </div>
@@ -170,7 +177,9 @@ const ContactSection: React.FC = () => {
                   </label>
                   <Input
                     type="text"
+                    name="service"
                     placeholder="e.g., Residential Wiring, LED Installation"
+                    required
                     className="bg-background/50 border-primary/20 focus:border-primary text-foreground"
                   />
                 </div>
@@ -180,8 +189,10 @@ const ContactSection: React.FC = () => {
                     Message
                   </label>
                   <Textarea
+                    name="message"
                     placeholder="Tell us about your project..."
                     rows={4}
+                    required
                     className="bg-background/50 border-primary/20 focus:border-primary text-foreground resize-none"
                   />
                 </div>
