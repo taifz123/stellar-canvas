@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 
 interface PulsarGridBackgroundProps {
   children?: React.ReactNode;
@@ -16,11 +16,11 @@ const PulsarGridBackground: React.FC<PulsarGridBackgroundProps> = ({
   gridSpacing = 30,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const mousePosRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
+      mousePosRef.current = { x: e.clientX, y: e.clientY };
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
@@ -32,9 +32,10 @@ const PulsarGridBackground: React.FC<PulsarGridBackgroundProps> = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let width: number, height: number;
+    let width = 0;
+    let height = 0;
     let dots: Dot[] = [];
-    let frameId: number;
+    let frameId = 0;
     let time = 0;
 
     class Dot {
@@ -49,7 +50,8 @@ const PulsarGridBackground: React.FC<PulsarGridBackgroundProps> = ({
       }
 
       draw() {
-        const dist = Math.hypot(this.x - mousePos.x, this.y - mousePos.y);
+        const { x: mx, y: my } = mousePosRef.current;
+        const dist = Math.hypot(this.x - mx, this.y - my);
         const wave = Math.sin(dist * 0.03 - time * 0.05);
         const size = this.baseSize + Math.max(0, wave) * 3;
         const opacity = Math.max(0, wave * 1.2 - 0.2);
@@ -75,8 +77,8 @@ const PulsarGridBackground: React.FC<PulsarGridBackgroundProps> = ({
           dots.push(new Dot(x + gridSpacing / 2, y + gridSpacing / 2));
         }
       }
-      if (mousePos.x === 0 && mousePos.y === 0) {
-        setMousePos({ x: width / 2, y: height / 2 });
+      if (mousePosRef.current.x === 0 && mousePosRef.current.y === 0) {
+        mousePosRef.current = { x: width / 2, y: height / 2 };
       }
     };
 
@@ -94,7 +96,7 @@ const PulsarGridBackground: React.FC<PulsarGridBackgroundProps> = ({
       window.removeEventListener("resize", setup);
       cancelAnimationFrame(frameId);
     };
-  }, [dotColor, gridSpacing, mousePos]);
+  }, [dotColor, gridSpacing]);
 
   return (
     <div

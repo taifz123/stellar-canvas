@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Phone, Mail, MapPin, Clock, Send, Zap } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send, Zap, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 const contactInfo = [
   {
@@ -32,10 +33,39 @@ const contactInfo = [
   },
 ];
 
+const encode = (data: Record<string, string>) =>
+  Object.keys(data)
+    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+    .join("&");
+
 const ContactSection: React.FC = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const payload: Record<string, string> = { "form-name": "contact" };
+    formData.forEach((value, key) => {
+      payload[key] = value.toString();
+    });
+
+    setSubmitting(true);
+    try {
+      await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encode(payload),
+      });
+      toast.success("Message sent! We'll be in touch shortly.");
+      setSubmitted(true);
+      form.reset();
+    } catch (err) {
+      toast.error("Something went wrong. Please call us on 0415 054 695.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -124,7 +154,20 @@ const ContactSection: React.FC = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <form onSubmit={handleSubmit} className="card-glass rounded-2xl p-8">
+            <form
+              name="contact"
+              method="POST"
+              data-netlify="true"
+              data-netlify-honeypot="bot-field"
+              onSubmit={handleSubmit}
+              className="card-glass rounded-2xl p-8"
+            >
+              <input type="hidden" name="form-name" value="contact" />
+              <p className="hidden">
+                <label>
+                  Don't fill this out if you're human: <input name="bot-field" />
+                </label>
+              </p>
               <h3 className="font-display text-2xl font-semibold text-foreground mb-6">
                 Request a Quote
               </h3>
@@ -132,21 +175,27 @@ const ContactSection: React.FC = () => {
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm text-muted-foreground mb-2 block">
+                    <label htmlFor="contact-name" className="text-sm text-muted-foreground mb-2 block">
                       Full Name
                     </label>
                     <Input
+                      id="contact-name"
+                      name="name"
                       type="text"
+                      required
                       placeholder="John Doe"
                       className="bg-background/50 border-primary/20 focus:border-primary text-foreground"
                     />
                   </div>
                   <div>
-                    <label className="text-sm text-muted-foreground mb-2 block">
+                    <label htmlFor="contact-phone" className="text-sm text-muted-foreground mb-2 block">
                       Phone Number
                     </label>
                     <Input
+                      id="contact-phone"
+                      name="phone"
                       type="tel"
+                      required
                       placeholder="+61 xxx xxx xxx"
                       className="bg-background/50 border-primary/20 focus:border-primary text-foreground"
                     />
@@ -154,21 +203,26 @@ const ContactSection: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm text-muted-foreground mb-2 block">
+                  <label htmlFor="contact-email" className="text-sm text-muted-foreground mb-2 block">
                     Email Address
                   </label>
                   <Input
+                    id="contact-email"
+                    name="email"
                     type="email"
+                    required
                     placeholder="john@example.com"
                     className="bg-background/50 border-primary/20 focus:border-primary text-foreground"
                   />
                 </div>
 
                 <div>
-                  <label className="text-sm text-muted-foreground mb-2 block">
+                  <label htmlFor="contact-service" className="text-sm text-muted-foreground mb-2 block">
                     Service Required
                   </label>
                   <Input
+                    id="contact-service"
+                    name="service"
                     type="text"
                     placeholder="e.g., Residential Wiring, LED Installation"
                     className="bg-background/50 border-primary/20 focus:border-primary text-foreground"
@@ -176,10 +230,13 @@ const ContactSection: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm text-muted-foreground mb-2 block">
+                  <label htmlFor="contact-message" className="text-sm text-muted-foreground mb-2 block">
                     Message
                   </label>
                   <Textarea
+                    id="contact-message"
+                    name="message"
+                    required
                     placeholder="Tell us about your project..."
                     rows={4}
                     className="bg-background/50 border-primary/20 focus:border-primary text-foreground resize-none"
@@ -188,10 +245,25 @@ const ContactSection: React.FC = () => {
 
                 <Button
                   type="submit"
-                  className="w-full btn-primary-glow border-0 mt-2"
+                  disabled={submitting || submitted}
+                  className="w-full btn-primary-glow border-0 mt-2 disabled:opacity-70"
                 >
-                  <Send className="w-4 h-4 mr-2" />
-                  Send Message
+                  {submitted ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      Message Sent
+                    </>
+                  ) : submitting ? (
+                    <>
+                      <Send className="w-4 h-4 mr-2 animate-pulse" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 mr-2" />
+                      Send Message
+                    </>
+                  )}
                 </Button>
               </div>
             </form>
