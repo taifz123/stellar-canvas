@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CheckCircle2, Award, Users, Target } from "lucide-react";
 
@@ -58,14 +59,15 @@ const AboutSection: React.FC = () => {
               ))}
             </div>
 
-            <motion.a
-              href="#contact"
-              className="btn-primary-glow inline-flex mt-10"
+            <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              className="inline-flex mt-10"
             >
-              Learn More About Us
-            </motion.a>
+              <Link to="/contact" className="btn-primary-glow">
+                Get In Touch
+              </Link>
+            </motion.div>
           </motion.div>
 
           {/* Right - Stats Cards */}

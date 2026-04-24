@@ -1,7 +1,16 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Instagram, Zap } from "lucide-react";
 import logo from "@/assets/logo-transparent.png";
+
+const quickLinks: { label: string; to: string }[] = [
+  { label: "Home", to: "/" },
+  { label: "Services", to: "/services" },
+  { label: "Projects", to: "/projects" },
+  { label: "About", to: "/about" },
+  { label: "Contact", to: "/contact" },
+];
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -12,7 +21,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <a href="#home" className="flex items-center gap-3 mb-4">
+            <Link to="/" className="flex items-center gap-3 mb-4">
               <img src={logo} alt="Exotic Electrical" className="h-14 w-14 object-contain" />
               <div>
                 <span className="font-display text-lg font-bold text-foreground tracking-wider">
@@ -22,7 +31,7 @@ const Footer: React.FC = () => {
                   ELECTRICAL
                 </span>
               </div>
-            </a>
+            </Link>
             <p className="text-muted-foreground text-sm leading-relaxed">
               Exotic Electrical PTY Ltd - Premium electrical solutions for industrial, 
               commercial, and domestic properties. Licensed, insured, and available 24/7.
@@ -49,14 +58,14 @@ const Footer: React.FC = () => {
               Quick Links
             </h4>
             <ul className="space-y-3">
-              {["Home", "Services", "Projects", "About", "Contact"].map((link) => (
-                <li key={link}>
-                  <a
-                    href={`#${link.toLowerCase()}`}
+              {quickLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    to={link.to}
                     className="text-muted-foreground hover:text-primary transition-colors text-sm"
                   >
-                    {link}
-                  </a>
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -76,12 +85,12 @@ const Footer: React.FC = () => {
                 "Emergency Repairs",
               ].map((service) => (
                 <li key={service}>
-                  <a
-                    href="#services"
+                  <Link
+                    to="/services"
                     className="text-muted-foreground hover:text-primary transition-colors text-sm"
                   >
                     {service}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Zap, ArrowRight, Shield, Clock, Award } from "lucide-react";
 
@@ -67,23 +68,20 @@ const HeroSection: React.FC = () => {
             custom={3}
             className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <motion.a
-              href="#contact"
-              className="btn-primary-glow text-lg flex items-center gap-2"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Get Free Quote
-              <ArrowRight className="w-5 h-5" />
-            </motion.a>
-            <motion.a
-              href="#projects"
-              className="btn-outline-glow text-lg"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              View Our Work
-            </motion.a>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                to="/contact"
+                className="btn-primary-glow text-lg inline-flex items-center gap-2"
+              >
+                Get Free Quote
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link to="/projects" className="btn-outline-glow text-lg inline-flex">
+                View Our Work
+              </Link>
+            </motion.div>
           </motion.div>
 
           {/* Stats */}
