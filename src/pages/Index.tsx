@@ -2,7 +2,6 @@ import React from "react";
 import PulsarGridBackground from "@/components/ui/pulsar-grid-background";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import VideoSection from "@/components/VideoSection";
 import ServicesSection from "@/components/ServicesSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import AboutSection from "@/components/AboutSection";
@@ -20,7 +19,6 @@ const Index: React.FC = () => {
       <Navbar />
       <main>
         <HeroSection />
-        <VideoSection />
         <ServicesSection />
         <ProjectsSection />
         <AboutSection />

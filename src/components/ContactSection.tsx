@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { Phone, Mail, MapPin, Clock, Send, Zap, CheckCircle2 } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+
+const CONTACT_EMAIL = "info@exoticelectrical.com.au";
 
 const contactInfo = [
   {
@@ -33,39 +35,32 @@ const contactInfo = [
   },
 ];
 
-const encode = (data: Record<string, string>) =>
-  Object.keys(data)
-    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
-    .join("&");
-
 const ContactSection: React.FC = () => {
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
-    const formData = new FormData(form);
-    const payload: Record<string, string> = { "form-name": "contact" };
-    formData.forEach((value, key) => {
-      payload[key] = value.toString();
-    });
+    const data = new FormData(form);
+    const name = (data.get("name") as string) || "";
+    const phone = (data.get("phone") as string) || "";
+    const email = (data.get("email") as string) || "";
+    const service = (data.get("service") as string) || "";
+    const message = (data.get("message") as string) || "";
 
-    setSubmitting(true);
-    try {
-      await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: encode(payload),
-      });
-      toast.success("Message sent! We'll be in touch shortly.");
-      setSubmitted(true);
-      form.reset();
-    } catch (err) {
-      toast.error("Something went wrong. Please call us on 0415 054 695.");
-    } finally {
-      setSubmitting(false);
-    }
+    const subject = `Quote request — ${service || "General enquiry"}`;
+    const body = [
+      `Name: ${name}`,
+      `Phone: ${phone}`,
+      `Email: ${email}`,
+      `Service: ${service}`,
+      "",
+      "Message:",
+      message,
+    ].join("\n");
+
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+    toast.success("Opening your email client...");
   };
 
   return (
@@ -155,19 +150,9 @@ const ContactSection: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <form
-              name="contact"
-              method="POST"
-              data-netlify="true"
-              data-netlify-honeypot="bot-field"
               onSubmit={handleSubmit}
               className="card-glass rounded-2xl p-8"
             >
-              <input type="hidden" name="form-name" value="contact" />
-              <p className="hidden">
-                <label>
-                  Don't fill this out if you're human: <input name="bot-field" />
-                </label>
-              </p>
               <h3 className="font-display text-2xl font-semibold text-foreground mb-6">
                 Request a Quote
               </h3>
@@ -245,25 +230,10 @@ const ContactSection: React.FC = () => {
 
                 <Button
                   type="submit"
-                  disabled={submitting || submitted}
-                  className="w-full btn-primary-glow border-0 mt-2 disabled:opacity-70"
+                  className="w-full btn-primary-glow border-0 mt-2"
                 >
-                  {submitted ? (
-                    <>
-                      <CheckCircle2 className="w-4 h-4 mr-2" />
-                      Message Sent
-                    </>
-                  ) : submitting ? (
-                    <>
-                      <Send className="w-4 h-4 mr-2 animate-pulse" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4 mr-2" />
-                      Send Message
-                    </>
-                  )}
+                  <Send className="w-4 h-4 mr-2" />
+                  Send Message
                 </Button>
               </div>
             </form>

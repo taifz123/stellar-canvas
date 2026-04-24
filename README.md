@@ -25,19 +25,20 @@ npm run build     # production build → dist/
 npm run preview   # preview the production build locally
 ```
 
-## Deployment (Netlify)
+## Deployment (Vercel)
 
-The repo is configured for Netlify via `netlify.toml`:
+The repo is configured for Vercel via `vercel.json`:
 
+- Framework: auto-detected (Vite)
 - Build command: `npm run build`
-- Publish directory: `dist`
-- Node version: 20
+- Output directory: `dist`
+- SPA rewrite so client-side routes resolve to `/`
 
-Push to the linked GitHub repo and Netlify will auto-deploy.
+Push to the linked GitHub repo and Vercel will auto-deploy.
 
 ### Contact form
 
-The contact form uses [Netlify Forms](https://docs.netlify.com/forms/setup/). A
-hidden static copy of the form is registered in `index.html` so Netlify's form
-detector can find it at build time. Submissions land in the Netlify dashboard
-under **Forms → contact**.
+The form currently opens the visitor's email client via `mailto:` prefilled
+with the form fields. To accept submissions server-side, drop in a service
+endpoint (Formspree, Web3Forms, or a Vercel serverless function + Resend) by
+replacing the `handleSubmit` body in `src/components/ContactSection.tsx`.
